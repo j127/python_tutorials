@@ -1,0 +1,17 @@
+# Editors
+*~
+tags
+tags.*
+.idea/
+.vscode/
+*.sw[op]
+
+# Python
+*.py[cod]
+__pycache__/
+
+# Ruby
+/.bundle
+
+# Node
+node_modules/
