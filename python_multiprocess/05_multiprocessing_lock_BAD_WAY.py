@@ -1,35 +1,33 @@
-"""Multiprocessing -- sharing memory with Lock."""
+"""Bad multiprocessing, without lock.
+
+The total might be different on different runs.
+"""
 import time
 import multiprocessing
 
 
-def deposit(balance, lock):
+def deposit(balance):
     for i in range(100):
         time.sleep(0.01)
-        lock.acquire()
         balance.value = balance.value + 1
-        lock.release()
 
 
-def withdraw(balance, lock):
+def withdraw(balance):
     for i in range(100):
         time.sleep(0.01)
-        lock.acquire()
         balance.value = balance.value - 1
-        lock.release()
 
 
 if __name__ == '__main__':
     NUM_RUNS = 20
     profit_values = []
     currency = 'gold bars'
-    print('The output should always be 200 {}, because the balance.value gets locked.'.format(currency))
+    print('The output should always be 200 {}, but sometimes it will be wrong.'.format(currency))
     print('The program will now run {} times...'.format(NUM_RUNS))
     for _ in range(NUM_RUNS):
         balance = multiprocessing.Value('i', 200)
-        lock = multiprocessing.Lock()
-        d = multiprocessing.Process(target=deposit, args=(balance, lock))
-        w = multiprocessing.Process(target=withdraw, args=(balance, lock))
+        d = multiprocessing.Process(target=deposit, args=(balance,))
+        w = multiprocessing.Process(target=withdraw, args=(balance,))
 
         d.start()
         w.start()
@@ -44,5 +42,4 @@ if __name__ == '__main__':
             profit_values.append(off_by)
             print('balance value is {} (ERROR: your bank account is off by {} {})'.format(balance.value, off_by, currency))
     profit = sum(profit_values)
-    assert profit == 0
-    print('{} == 0. If there is no error message, and all the results were 200, then it worked.'.format(profit))
+    print('your bank account is now off by {} {}.'.format(profit, currency))
