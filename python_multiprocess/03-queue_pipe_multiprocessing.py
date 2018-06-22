@@ -11,6 +11,8 @@ def calc_square(ns, result, v):
     print('incoming v is {}'.format(v.value))
     v.value = 12  # changing the shared variable here \˚ㄥ˚\
     for idx, n in enumerate(ns):
+        # The `append` method isn't available on `result` in this
+        # version.
         result[idx] = round(n * n, 2)
 
     # See below for why this prints strange output
